@@ -32,49 +32,58 @@ Tile9 = 3,3,0,1,1,0
 currentTile = Tile1
 x = currentTile[0]
 y = currentTile[1]
+hasNotRun = True
 
 #Finds out which directions player can choose from.
-def possible_directions(currentTile):
+def possible_directions(currentTile,hasNotRun):
     #Set variables that need to be reset every call.
     howManyDirections = 0
     travelPossibilities = ""
     #If there are no walls, add that direction to possible directions.
-    if not currentTile[3]:
-        travelPossibilities += "(N)orth"
-        howManyDirections += 1
-    if not currentTile[4]:
-        if howManyDirections > 0:
-            travelPossibilities += " or (E)ast"
-        else:
-            travelPossibilities += "(E)ast"
-        howManyDirections += 1
-    if not currentTile[5]:
-        if howManyDirections > 0:
-            travelPossibilities += " or (S)outh"
-        else:
-            travelPossibilities += "(S)outh"
-        howManyDirections += 1
-    if not currentTile[2]:
-        if howManyDirections > 0:
-            travelPossibilities += " or (W)est"
-        else:
-            travelPossibilities += "(W)est"
-        howManyDirections += 1
-    return travelPossibilities
+    if hasNotRun:
+        if not currentTile[3]:
+            travelPossibilities += "(N)orth"
+            howManyDirections += 1
+        if not currentTile[4]:
+            if howManyDirections > 0:
+                travelPossibilities += " or (E)ast"
+            else:
+                travelPossibilities += "(E)ast"
+            howManyDirections += 1
+        if not currentTile[5]:
+            if howManyDirections > 0:
+                travelPossibilities += " or (S)outh"
+            else:
+                travelPossibilities += "(S)outh"
+            howManyDirections += 1
+        if not currentTile[2]:
+            if howManyDirections > 0:
+                travelPossibilities += " or (W)est"
+            else:
+                travelPossibilities += "(W)est"
+            howManyDirections += 1
+        #Print out travel options.
+        print("You can travel: " + travelPossibilities + ".")
+        hasNotRun = False
+        return hasNotRun
 
 #Checks if direction is choosable
-def check_if_choosable(direction,currentTile,x,y):
+def check_if_choosable(hasNotRun,direction,currentTile,x,y):
     if direction.lower() == "n" and currentTile[3] == False:
         y += 1
+        hasNotRun = True
     elif direction.lower() == "e" and currentTile[4] == False:
         x += 1
+        hasNotRun = True
     elif direction.lower() == "s" and currentTile[5] == False:
         y -= 1
+        hasNotRun = True
     elif direction.lower() == "w" and currentTile[2] == False:
         x -= 1
+        hasNotRun = True
     else:
         print("Not a valid direction!")
-    return x,y
+    return hasNotRun,x,y
 
 #Moves player to next tile.
 def move_player(x,y,currentTile):
@@ -101,14 +110,13 @@ def move_player(x,y,currentTile):
 #While loop which contains the program (While not at victory x,y coordinates).
 while x != 3 or y != 1:
 
-    #Print out travel options.
-    print("You can travel: " + possible_directions(currentTile) + ".")
+    hasNotRun = possible_directions(currentTile,hasNotRun)
 
     #Ask player in which direction he would like to go.
     direction = input("Direction: ")
 
     #See if the chosen direction is valid.
-    x, y = check_if_choosable(direction,currentTile,x,y)
+    hasNotRun,x,y = check_if_choosable(hasNotRun,direction,currentTile,x,y)
 
     #Move player to chosen tile.
     currentTile = move_player(x,y,currentTile)

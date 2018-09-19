@@ -22,7 +22,7 @@ Tile9 = 3,3,0,1,1,0
 currentTile = Tile1
 x = currentTile[0]
 y = currentTile[1]
-
+hasNotRun = True
 #While loop which contains the program
 while x != 3 or y != 1:
 
@@ -30,30 +30,32 @@ while x != 3 or y != 1:
     howManyDirections = 0
     travelPossibilities = ""
     #Find out which directions player can choose from
-    if not currentTile[3]:
-        travelPossibilities += "(N)orth"
-        howManyDirections += 1
-    if not currentTile[4]:
-        if howManyDirections > 0:
-            travelPossibilities += " or (E)ast"
-        else:
-            travelPossibilities += "(E)ast"
-        howManyDirections += 1
-    if not currentTile[5]:
-        if howManyDirections > 0:
-            travelPossibilities += " or (S)outh"
-        else:
-            travelPossibilities += "(S)outh"
-        howManyDirections += 1
-    if not currentTile[2]:
-        if howManyDirections > 0:
-            travelPossibilities += " or (W)est"
-        else:
-            travelPossibilities += "(W)est"
-        howManyDirections += 1
-    
-    #print out travel options
-    print("You can travel: " + travelPossibilities + ".")
+    if hasNotRun:
+        if not currentTile[3]:
+            travelPossibilities += "(N)orth"
+            howManyDirections += 1
+        if not currentTile[4]:
+            if howManyDirections > 0:
+                travelPossibilities += " or (E)ast"
+            else:
+                travelPossibilities += "(E)ast"
+            howManyDirections += 1
+        if not currentTile[5]:
+            if howManyDirections > 0:
+                travelPossibilities += " or (S)outh"
+            else:
+                travelPossibilities += "(S)outh"
+            howManyDirections += 1
+        if not currentTile[2]:
+            if howManyDirections > 0:
+                travelPossibilities += " or (W)est"
+            else:
+                travelPossibilities += "(W)est"
+            howManyDirections += 1
+        #print out travel options
+        print("You can travel: " + travelPossibilities + ".")
+
+        hasNotRun = False
 
     #Let player choose direction to go
     direction = input("Direction: ")
@@ -61,12 +63,16 @@ while x != 3 or y != 1:
     #Check if direction is choosable
     if direction.lower() == "n" and currentTile[3] == False:
         y += 1
+        hasNotRun = True
     elif direction.lower() == "e" and currentTile[4] == False:
         x += 1
+        hasNotRun = True
     elif direction.lower() == "s" and currentTile[5] == False:
         y -= 1
+        hasNotRun = True
     elif direction.lower() == "w" and currentTile[2] == False:
         x -= 1
+        hasNotRun = True
     else:
         print("Not a valid direction!")
 
