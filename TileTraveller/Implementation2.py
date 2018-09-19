@@ -1,5 +1,15 @@
 #Path to git repo - https://github.com/adamelid/PythonVerk/tree/master/TileTraveller
 
+# 1. Which implementation was easier and why?
+#   - In my opinion programming with functions is way easier than without, mainly because it streamlines and therefore simplifies the coding.
+# 2. Which implementation is more readable and why?
+#   - I'm not sure which implementation is more readable since if you were to read the main code with functions, -
+#   - you would have to scroll up to read what the functions contain, although reading without functions could be -
+#   - too confusing as well.
+# 3. Which problems in the first implementation were you able to solve with the latter implementation?
+#   - I didn't really have any problems with the first implementation, so the latter implementation did not change much, -
+#   - the only main difference between the two was the addition of functions instead of a long drawn out program.
+
 #Algorithm is as follows:
 #While not at final tile.
 #----Show possible directions.
@@ -8,7 +18,7 @@
 #----Move to chosen tile if valid.
 #Print victory result.
 
-#Set static variables
+#Set static variables.
 Tile1 = 1,1,1,0,1,1
 Tile2 = 2,1,1,0,1,1
 Tile3 = 3,1,1,0,1,1
@@ -23,13 +33,12 @@ currentTile = Tile1
 x = currentTile[0]
 y = currentTile[1]
 
-#While loop which contains the program
-while x != 3 or y != 1:
-
-    #Set variables that need to be reset within the loop
+#Finds out which directions player can choose from.
+def possible_directions(currentTile):
+    #Set variables that need to be reset every call.
     howManyDirections = 0
     travelPossibilities = ""
-    #Find out which directions player can choose from
+    #If there are no walls, add that direction to possible directions.
     if not currentTile[3]:
         travelPossibilities += "(N)orth"
         howManyDirections += 1
@@ -51,14 +60,10 @@ while x != 3 or y != 1:
         else:
             travelPossibilities += "(W)est"
         howManyDirections += 1
-    
-    #print out travel options
-    print("You can travel: " + travelPossibilities + ".")
+    return travelPossibilities
 
-    #Let player choose direction to go
-    direction = input("Direction: ")
-
-    #Check if direction is choosable
+#Checks if direction is choosable
+def check_if_choosable(direction,currentTile,x,y):
     if direction.lower() == "n" and currentTile[3] == False:
         y += 1
     elif direction.lower() == "e" and currentTile[4] == False:
@@ -69,8 +74,10 @@ while x != 3 or y != 1:
         x -= 1
     else:
         print("Not a valid direction!")
+    return x,y
 
-    #Move player to next tile
+#Moves player to next tile.
+def move_player(x,y,currentTile):
     if x == 1 and y == 1:
         currentTile = Tile1
     elif x == 2 and y == 1:
@@ -89,6 +96,22 @@ while x != 3 or y != 1:
         currentTile = Tile8
     elif x == 3 and y == 3:
         currentTile = Tile9
+    return currentTile
+
+#While loop which contains the program (While not at victory x,y coordinates).
+while x != 3 or y != 1:
+
+    #Print out travel options.
+    print("You can travel: " + possible_directions(currentTile) + ".")
+
+    #Ask player in which direction he would like to go.
+    direction = input("Direction: ")
+
+    #See if the chosen direction is valid.
+    x, y = check_if_choosable(direction,currentTile,x,y)
+
+    #Move player to chosen tile.
+    currentTile = move_player(x,y,currentTile)
 
 #Print result when at tile x == 3 and y == 1 (Tile3)
 print("Victory!")
