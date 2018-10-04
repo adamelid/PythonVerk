@@ -1,15 +1,3 @@
-#Path to git repo - https://github.com/adamelid/PythonVerk/tree/master/TileTraveller
-
-# 1. Which implementation was easier and why?
-#   - In my opinion programming with functions is way easier than without, mainly because it streamlines and therefore simplifies the coding.
-# 2. Which implementation is more readable and why?
-#   - I'm not sure which implementation is more readable since if you were to read the main code with functions, -
-#   - you would have to scroll up to read what the functions contain, although reading without functions could be -
-#   - too confusing as well.
-# 3. Which problems in the first implementation were you able to solve with the latter implementation?
-#   - I didn't really have any problems with the first implementation, so the latter implementation did not change much, -
-#   - the only main difference between the two was the addition of functions instead of a long drawn out program.
-
 #Algorithm is as follows:
 #While not at final tile.
 #----Show possible directions.
@@ -19,21 +7,29 @@
 #Print victory result.
 
 #Set static variables.
-# -     x, y, walls(west, north, east, south)
-Tile1 = 1,1,1,0,1,1
-Tile2 = 2,1,1,0,1,1
-Tile3 = 3,1,1,0,1,1
-Tile4 = 1,2,1,0,0,0
-Tile5 = 2,2,0,1,1,0
-Tile6 = 3,2,1,0,1,0
-Tile7 = 1,3,1,1,0,0
-Tile8 = 2,3,0,1,0,1
-Tile9 = 3,3,0,1,1,0
-
+# -     x, y, walls(west, north, east, south), lever.
+Tile1 = 1,1,1,0,1,1,0
+Tile2 = 2,1,1,0,1,1,0
+Tile3 = 3,1,1,0,1,1,0
+Tile4 = 1,2,1,0,0,0,1
+Tile5 = 2,2,0,1,1,0,1
+Tile6 = 3,2,1,0,1,0,1
+Tile7 = 1,3,1,1,0,0,0
+Tile8 = 2,3,0,1,0,1,1
+Tile9 = 3,3,0,1,1,0,0
 currentTile = Tile1
 x = currentTile[0]
 y = currentTile[1]
 hasNotRun = True
+totalCoins = 0
+playAgain = True
+
+def pull_lever(totalCoins):
+    leverChoice = input("Pull a lever (y/n): ").lower()
+    if leverChoice == "y":
+        totalCoins += 1
+        print("You received 1 coins, your total is now " + str(totalCoins) + ".")
+    return totalCoins
 
 #Finds out which directions player can choose from.
 def possible_directions(currentTile,hasNotRun):
@@ -108,19 +104,29 @@ def move_player(x,y,currentTile):
         currentTile = Tile9
     return currentTile
 
-#While loop which contains the program (While not at victory x,y coordinates).
-while x != 3 or y != 1:
+def play(x,y,currentTile,totalCoins,hasNotRun):
+    #While loop which contains the program (While not at victory x,y coordinates).
+    while x != 3 or y != 1:
+        leverActive = currentTile[6]
+        if leverActive:
+            totalCoins = pull_lever(totalCoins)
+        hasNotRun = possible_directions(currentTile,hasNotRun)
+        direction = input("Direction: ")
+        hasNotRun,x,y = check_if_choosable(hasNotRun,direction,currentTile,x,y)
+        currentTile = move_player(x,y,currentTile)
+    #Print result when at tile x == 3 and y == 1 (Tile3)
+    print("Victory!")
+    playAgain = input("Play again (y/n): ").lower()
+    if playAgain == "y":
+        playAgain = True
+    else:
+        playAgain = False
+    return playAgain
 
-    hasNotRun = possible_directions(currentTile,hasNotRun)
+def main():
+    while True:
+        playAgain = play(x,y,currentTile,totalCoins,hasNotRun)
+        if playAgain == False:
+            break
 
-    #Ask player in which direction he would like to go.
-    direction = input("Direction: ")
-
-    #See if the chosen direction is valid.
-    hasNotRun,x,y = check_if_choosable(hasNotRun,direction,currentTile,x,y)
-
-    #Move player to chosen tile.
-    currentTile = move_player(x,y,currentTile)
-
-#Print result when at tile x == 3 and y == 1 (Tile3)
-print("Victory!")
+main()
